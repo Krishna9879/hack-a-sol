@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema({
     bio: String,
     grade: String,
     subjects: [String],
-    learningStyle: String
+    learningStyle: String,
+    language: { type: String, default: 'en' } // Added language preference
   },
   progress: {
     completedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
@@ -38,7 +39,9 @@ const userSchema = new mongoose.Schema({
     language: { type: String, default: 'english' },
     difficulty: { type: String, default: 'beginner' },
     studyTime: String
-  }
+  },
+  refreshTokenHash: { type: String }, // For refresh token rotation
+  learningProfile: { type: mongoose.Schema.Types.Mixed } // For storing AI-generated learning profiles
 }, { timestamps: true });
 
 userSchema.pre('save', async function(next) {
@@ -49,6 +52,19 @@ userSchema.pre('save', async function(next) {
 
 userSchema.methods.comparePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
+};
+
+// Method to set refresh token hash
+userSchema.methods.setRefreshTokenHash = async function(token) {
+  const salt = await bcrypt.genSalt(12);
+  this.refreshTokenHash = await bcrypt.hash(token, salt);
+  return this.save();
+};
+
+// Method to validate refresh token
+userSchema.methods.validateRefreshToken = async function(token) {
+  if (!this.refreshTokenHash) return false;
+  return await bcrypt.compare(token, this.refreshTokenHash);
 };
 
 module.exports = mongoose.model('User', userSchema);

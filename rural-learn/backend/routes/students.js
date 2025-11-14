@@ -1,67 +1,83 @@
 const express = require('express');
-const router = express.Router();
+const auth = require('../middleware/auth');
 const User = require('../models/User');
-const Course = require('../models/Course');
 
-// Get student profile
-router.get('/:id/profile', async (req, res) => {
+const router = express.Router();
+
+// GET /api/student/me
+// Purpose: get student profile & preferences
+router.get('/me', auth, async (req, res) => {
   try {
-    const student = await User.findById(req.params.id)
-      .populate('progress.completedCourses')
-      .select('-password');
+    // Return user profile excluding sensitive information
+    const user = req.user;
     
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: 'Student not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      student
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      language: user.profile?.language || 'en',
+      learningProfile: user.learningProfile || {}
     });
   } catch (error) {
-    console.error('Student profile error:', error);
+    console.error('Get profile error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch student profile'
+      message: 'Internal server error'
     });
   }
 });
 
-// Update student progress
-router.post('/:id/progress', async (req, res) => {
+// PUT /api/student/me
+// Purpose: update profile (name, language, learning style)
+router.put('/me', auth, async (req, res) => {
   try {
-    const { courseId, moduleId, points } = req.body;
+    const user = req.user;
+    const updates = req.body;
     
-    const student = await User.findById(req.params.id);
-    if (!student) {
-      return res.status(404).json({
+    // Update allowed fields only
+    const allowedUpdates = ['name', 'language', 'learningProfile'];
+    const requestedUpdates = Object.keys(updates);
+    const isValidOperation = requestedUpdates.every((update) => 
+      allowedUpdates.includes(update)
+    );
+    
+    if (!isValidOperation) {
+      return res.status(400).json({
         success: false,
-        message: 'Student not found'
+        message: 'Invalid updates!'
       });
     }
     
-    // Update progress
-    student.progress.totalPoints += points || 10;
-    student.progress.currentStreak += 1;
-    
-    if (courseId && !student.progress.completedCourses.includes(courseId)) {
-      student.progress.completedCourses.push(courseId);
+    // Apply updates
+    if (updates.name) {
+      user.name = updates.name;
     }
     
-    await student.save();
+    if (updates.language) {
+      user.profile = user.profile || {};
+      user.profile.language = updates.language;
+      user.preferences = user.preferences || {};
+      user.preferences.language = updates.language === 'en' ? 'english' : 'hindi';
+    }
     
-    res.json({
-      success: true,
-      progress: student.progress
+    if (updates.learningProfile) {
+      user.learningProfile = updates.learningProfile;
+    }
+    
+    await user.save();
+    
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      language: user.profile?.language || 'en',
+      learningProfile: user.learningProfile || {}
     });
   } catch (error) {
-    console.error('Progress update error:', error);
+    console.error('Update profile error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to update progress'
+      message: 'Internal server error'
     });
   }
 });

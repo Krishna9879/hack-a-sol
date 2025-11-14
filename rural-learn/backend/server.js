@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const metricsMiddleware = require('./middleware/metricsMiddleware');
 require('dotenv').config();
 
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(metricsMiddleware);
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -17,12 +19,35 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/students', require('./routes/students'));
+app.use('/api/student', require('./routes/students'));
+app.use('/api/student/roadmap', require('./routes/roadmaps'));
+app.use('/api/student/lesson', require('./routes/lessons'));
+app.use('/api/student/quiz', require('./routes/quizzes'));
+app.use('/api/student/mock-test', require('./routes/mockTests'));
+app.use('/api/student/career-path', require('./routes/careerPaths'));
+app.use('/api/student/progress', require('./routes/progress'));
 app.use('/api/teachers', require('./routes/teachers'));
 app.use('/api/courses', require('./routes/courses'));
 app.use('/api/ai', require('./routes/ai'));
-app.use('/api/mock-tests', require('./routes/mockTests'));
 app.use('/api/career', require('./routes/career'));
+app.use('/api/metrics', require('./routes/metrics'));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Something went wrong!'
+  });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
+  });
+});
 
 // Institute module routes
 app.use('/api/institute/students', require('./routes/instituteStudents'));
