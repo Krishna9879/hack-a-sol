@@ -40,7 +40,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="pointer-events-none absolute -top-32 -right-32 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -left-32 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -49,17 +51,17 @@ export default function LoginPage() {
       >
         <div className="text-center">
           <Link href="/" className="inline-flex items-center space-x-2 mb-6">
-            <AcademicCapIcon className="h-10 w-10 text-primary-600" />
+            <AcademicCapIcon className="h-10 w-10 text-primary-400" />
             <span className="text-3xl font-bold text-gradient">Rural Learn</span>
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h2>
-          <p className="text-gray-600">Sign in to continue your learning journey</p>
+          <h2 className="text-3xl font-bold text-slate-50 mb-2">Welcome back</h2>
+          <p className="text-slate-300">Sign in to continue your learning journey</p>
         </div>
 
-        <div className="card">
+        <div className="card animate-fade-in">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-200 mb-2">
                 Email Address
               </label>
               <input
@@ -75,7 +77,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -106,7 +108,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-primary flex items-center justify-center"
+              className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? <div className="spinner mr-2" /> : null}
               {isLoading ? 'Signing in...' : 'Sign in'}
@@ -114,9 +116,9 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-slate-300">
               Don't have an account?{' '}
-              <Link href="/auth/register" className="text-primary-600 hover:text-primary-500 font-medium">
+              <Link href="/auth/register" className="text-primary-400 hover:text-primary-300 font-medium">
                 Sign up
               </Link>
             </p>

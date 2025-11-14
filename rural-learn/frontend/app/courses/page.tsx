@@ -98,9 +98,9 @@ export default function CoursesPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950 text-slate-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-slate-900/60 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Link href="/dashboard" className="flex items-center space-x-2">
@@ -122,8 +122,8 @@ export default function CoursesPage() {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Explore Courses</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold text-slate-50 mb-2">Explore Courses</h1>
+          <p className="text-slate-300">
             Discover AI-generated and teacher-created courses tailored for rural education
           </p>
         </motion.div>
@@ -144,7 +144,7 @@ export default function CoursesPage() {
                 placeholder="Search courses..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full pl-10 pr-4 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-50 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
 
@@ -154,7 +154,7 @@ export default function CoursesPage() {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none bg-white"
+                className="pl-10 pr-8 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
               >
                 {subjects.map((subject) => (
                   <option key={subject} value={subject === 'All Subjects' ? 'all' : subject}>
@@ -169,7 +169,7 @@ export default function CoursesPage() {
               <select
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none bg-white"
+                className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
               >
                 {levels.map((level) => (
                   <option key={level} value={level === 'All Levels' ? 'all' : level}>
@@ -194,13 +194,13 @@ export default function CoursesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card hover:shadow-lg transition-shadow cursor-pointer"
+              className="card hover:shadow-2xl transition-shadow cursor-pointer"
             >
               <Link href={`/courses/${course.id}`}>
                 {/* Course Thumbnail */}
                 <div className="relative mb-4">
-                  <div className="w-full h-48 bg-gradient-to-br from-primary-100 to-purple-100 rounded-lg flex items-center justify-center">
-                    <PlayIcon className="h-12 w-12 text-primary-600" />
+                  <div className="w-full h-48 bg-gradient-to-br from-slate-900/80 to-slate-700/80 rounded-xl flex items-center justify-center">
+                    <PlayIcon className="h-12 w-12 text-primary-400" />
                   </div>
                   {course.isAIGenerated && (
                     <div className="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -209,8 +209,8 @@ export default function CoursesPage() {
                   )}
                   {course.progress > 0 && (
                     <div className="absolute bottom-2 left-2 right-2">
-                      <div className="bg-white/90 rounded-full p-1">
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-slate-900/80 rounded-full p-1">
+                        <div className="w-full bg-slate-800 rounded-full h-2">
                           <div 
                             className="bg-primary-600 h-2 rounded-full" 
                             style={{ width: `${course.progress}%` }}
@@ -224,24 +224,24 @@ export default function CoursesPage() {
                 {/* Course Info */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="px-2 py-1 bg-primary-100 text-primary-700 text-xs rounded-full">
+                    <span className="px-2 py-1 bg-primary-500/20 text-primary-200 text-xs rounded-full">
                       {course.subject}
                     </span>
-                    <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                    <span className="px-2 py-1 bg-slate-900/60 text-slate-200 text-xs rounded-full">
                       {course.level}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                  <h3 className="font-bold text-slate-50 mb-2 line-clamp-2">
                     {course.title}
                   </h3>
                   
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  <p className="text-slate-300 text-sm mb-4 line-clamp-2">
                     {course.description}
                   </p>
 
                   {/* Course Stats */}
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                  <div className="flex items-center justify-between text-sm text-slate-300 mb-4">
                     <div className="flex items-center">
                       <ClockIcon className="h-4 w-4 mr-1" />
                       {course.duration}
@@ -257,7 +257,7 @@ export default function CoursesPage() {
                       <StarIcon className="h-4 w-4 text-yellow-400 fill-current" />
                       <span className="ml-1 text-sm font-medium">{course.rating}</span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-500">
+                    <div className="flex items-center text-sm text-slate-300">
                       <UserIcon className="h-4 w-4 mr-1" />
                       {course.students}
                     </div>
@@ -265,7 +265,7 @@ export default function CoursesPage() {
 
                   {/* Instructor */}
                   <div className="mt-3 pt-3 border-t border-gray-200">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-slate-300">
                       by <span className="font-medium">{course.instructor}</span>
                     </p>
                   </div>

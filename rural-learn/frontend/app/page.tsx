@@ -49,17 +49,17 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen text-slate-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-slate-900/60 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
-              <AcademicCapIcon className="h-8 w-8 text-primary-600" />
+              <AcademicCapIcon className="h-8 w-8 text-primary-400" />
               <span className="text-2xl font-bold text-gradient">Rural Learn</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/auth/login" className="text-gray-600 hover:text-gray-900">
+              <Link href="/auth/login" className="text-slate-300 hover:text-slate-50">
                 Login
               </Link>
               <Link href="/auth/register" className="btn-primary">
@@ -78,13 +78,13 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-5xl md:text-6xl font-bold text-slate-50 mb-6">
               Bridging the{' '}
               <span className="text-gradient">Education Gap</span>
               <br />
               in Rural India
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
               AI-powered education platform ensuring learning continuity for remote villages. 
               From personalized courses to career guidance, we're transforming rural education.
             </p>
@@ -97,7 +97,7 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
           >
-            <div className="text-lg font-medium text-gray-700 mb-4 sm:mb-0">
+            <div className="text-lg font-medium text-slate-200 mb-4 sm:mb-0">
               I am a:
             </div>
             <div className="flex gap-4">
@@ -106,7 +106,7 @@ export default function HomePage() {
                 className={`px-8 py-4 rounded-xl font-medium transition-all duration-200 ${
                   userType === 'student'
                     ? 'bg-primary-600 text-white shadow-lg scale-105'
-                    : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-primary-300'
+                    : 'bg-white/5 text-slate-200 border-2 border-white/10 hover:border-primary-300'
                 }`}
               >
                 Student
@@ -116,7 +116,7 @@ export default function HomePage() {
                 className={`px-8 py-4 rounded-xl font-medium transition-all duration-200 ${
                   userType === 'teacher'
                     ? 'bg-primary-600 text-white shadow-lg scale-105'
-                    : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-primary-300'
+                    : 'bg-white/5 text-slate-200 border-2 border-white/10 hover:border-primary-300'
                 }`}
               >
                 Teacher
@@ -143,13 +143,13 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-slate-50 mb-4">
               Powerful Features for Rural Education
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
               Everything you need to ensure quality education reaches every corner of rural India
             </p>
           </div>
@@ -161,13 +161,13 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card hover:shadow-lg transition-shadow duration-200"
+                className="card hover:shadow-2xl transition-shadow duration-200"
               >
                 <feature.icon className="h-12 w-12 text-primary-600 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-slate-50 mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-slate-300">
                   {feature.description}
                 </p>
               </motion.div>
@@ -206,7 +206,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-slate-950/80 border-t border-slate-800 text-slate-100 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
