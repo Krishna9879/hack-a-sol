@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Teacher Dashboard - Setu</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .nav-tab {
+            padding: 11px 24px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            font-size: 15px;
+            font-weight: 400;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            letter-spacing: 0.01em;
+        }
+
+        .nav-tab.active {
+            background-color: #4a5166;
+            color: #ffffff;
+        }
+
+        .nav-tab:hover:not(.active) {
+            color: #d1d5db;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .view-toggle {
+            display: flex;
+            background-color: #1f2937;
+            border-radius: 8px;
+            padding: 2px;
+            gap: 2px;
+        }
+
+        .view-btn {
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background-color: #374151;
+            color: #ffffff;
+        }
+
+        .view-btn:hover:not(.active) {
+            color: #d1d5db;
+        }
+
+        .sort-dropdown {
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 15px;
+            padding: 10px 0;
+            cursor: pointer;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
+        .create-dropdown-container {
+            position: relative;
+        }
+        
+        .create-btn {
+            background-color: #c1fa6b;
+            color: #1a1a1a;
+            border: none;
+            padding: 11px 24px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-btn:hover {
+            background-color: #a8e055;
+        }
+        
+        .create-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #2a2a2a;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            z-index: 1000;
+            min-width: 200px;
+            display: none;
+            margin-top: 8px;
+            border: 1px solid #333;
+        }
+        
+        .create-dropdown-menu.show {
+            display: block;
+        }
+        
+        .create-dropdown-item {
+            padding: 12px 16px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .create-dropdown-item:hover {
+            background-color: #3a3a3a;
+        }
+        
+        .create-dropdown-item:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .create-dropdown-item:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 36px;
+            color: #e5e7eb;
+            letter-spacing: -0.02em;
+        }
+
+        .notebooks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .notebook-card {
+            position: relative;
+            height: 230px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .notebook-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .notebook-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.85) 100%);
+            z-index: 1;
+        }
+
+        .notebook-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9);
+        }
+
+        .notebook-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 18px 20px 20px;
+            z-index: 2;
+        }
+
+        .notebook-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .notebook-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .notebook-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .notebook-author {
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
+        .notebook-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 14px;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: #ffffff;
+        }
+
+        .notebook-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+            font-weight: 400;
+        }
+
+        .menu-btn {
+            width: 32px;
+            height: 32px;
+            background-color: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 50%;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            font-size: 18px;
+            transition: background-color 0.2s;
+        }
+
+        .menu-btn:hover {
+            background-color: rgba(255,255,255,0.25);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: #2a2a2a;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            min-width: 120px;
+            display: none;
+            margin-bottom: 5px;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 10px 16px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #3a3a3a;
+        }
+        
+        .dropdown-item:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .dropdown-item:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .notebook-meta {
+            position: relative;
+        }
+
+        /* Card-specific styling with actual image backgrounds */
+        .card-1 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23d4a574"/><stop offset="100%" style="stop-color:%23b8935e"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g1)"/></svg>') center/cover; }
+        
+        .card-2 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%235a4d3f"/><stop offset="100%" style="stop-color:%23736354"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g2)"/></svg>') center/cover; }
+        
+        .card-3 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%233d3d5c"/><stop offset="100%" style="stop-color:%23525270"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g3)"/></svg>') center/cover; }
+        
+        .card-4 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%231a1d2e"/><stop offset="100%" style="stop-color:%232a2d3e"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g4)"/></svg>') center/cover; }
+        
+        .card-5 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%234a5f8f"/><stop offset="100%" style="stop-color:%235a7eb8"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g5)"/></svg>') center/cover; }
+        
+        .card-6 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%232d1a3d"/><stop offset="100%" style="stop-color:%234a2d5a"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g6)"/></svg>') center/cover; }
+        
+        .card-7 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g7" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%237a6b5d"/><stop offset="100%" style="stop-color:%238b7a6f"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g7)"/></svg>') center/cover; }
+        
+        .card-8 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><defs><linearGradient id="g8" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23a07d4f"/><stop offset="100%" style="stop-color:%23c4a574"/></linearGradient></defs><rect width="400" height="300" fill="url(%23g8)"/></svg>') center/cover; }
+
+        .icon-multi { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); color: white; font-size: 16px; }
+        .icon-rss { background: #000; color: white; }
+        .icon-book { background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%); }
+        .icon-e { background: #dc2626; color: white; font-weight: 700; font-size: 18px; }
+        .icon-rss2 { background: #000; color: white; }
+        .icon-avatar { background: #f59e0b; }
+        .icon-rss3 { background: #000; color: white; }
+        
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-tab {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .create-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .create-dropdown-menu {
+                position: static;
+                box-shadow: none;
+                border: none;
+                background: #333;
+                margin-top: 10px;
+                border-radius: 8px;
+            }
+            
+            .file-upload-area {
+                padding: 20px 12px;
+            }
+            
+            .file-upload-area i {
+                font-size: 24px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .notebooks-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .notebook-card {
+                height: 200px;
+            }
+            
+            .notebook-title {
+                font-size: 20px;
+            }
+        }
+        
+        /* Tablet Portrait */
+        @media (min-width: 481px) and (max-width: 768px) {
+            body {
+                padding: 20px 30px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .notebooks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+        }
+        
+        /* Tablet Landscape */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            body {
+                padding: 20px 40px;
+            }
+            
+            .notebooks-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Desktop */
+        @media (min-width: 1025px) {
+            body {
+                padding: 20px 60px;
+            }
+            
+            .notebooks-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Full Page Modal */
+        .fullpage-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #1a1a1a;
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
+        }
+        
+        .fullpage-modal.show {
+            display: block;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 400;
+            color: #ffffff;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            color: #ffffff;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .chapter-id {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        
+        .section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+        
+        .files-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: #444 #1a1a1a;
+        }
+        
+        .files-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .files-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+        
+        .files-container::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+        
+        .files-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .file-item {
+            min-width: 200px;
+            padding: 16px;
+            background: #242424;
+            border-radius: 8px;
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .file-item:hover {
+            background: #2a2a2a;
+            border-color: #555;
+            transform: translateY(-2px);
+        }
+        
+        .file-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .file-name {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+        
+        .file-size {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .rag-summary {
+            color: #e0e0e0;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        /* Management Modals */
+        .management-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        
+        .management-modal.show {
+            display: flex;
+        }
+        
+        .modal-container {
+            background: #1a1a1a;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #333;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+        
+        .modal-header-mgmt {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title-mgmt {
+            font-size: 20px;
+            font-weight: 500;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .modal-close-mgmt {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 20px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .modal-close-mgmt:hover {
+            color: #ffffff;
+            background: #333;
+        }
+        
+        .modal-body-mgmt {
+            padding: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #242424;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #c1fa6b;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #242424;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #242424;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #c1fa6b;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        .btn-secondary {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #999;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #555;
+            color: #ffffff;
+        }
+        
+        .btn-primary {
+            padding: 10px 20px;
+            background: #c1fa6b;
+            border: none;
+            border-radius: 8px;
+            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: #a8e055;
+        }
+        
+        .student-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #242424;
+        }
+        
+        .student-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .student-item:last-child {
+            border-bottom: none;
+        }
+        
+        .student-email {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .remove-student {
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .remove-student:hover {
+            background: rgba(220, 38, 38, 0.1);
+        }
+        
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .subject-chip {
+            padding: 8px 12px;
+            background: #333;
+            border-radius: 20px;
+            color: #ffffff;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        
+        .remove-subject {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .remove-subject:hover {
+            color: #dc2626;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #333;
+            border-radius: 8px;
+            padding: 32px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #242424;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #c1fa6b;
+            background: #2a2a2a;
+        }
+        
+        .file-upload-area i {
+            font-size: 32px;
+            color: #999;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .file-upload-area span {
+            display: block;
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .file-upload-area small {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .uploaded-files {
+            margin-top: 16px;
+        }
+        
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #333;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .uploaded-file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .uploaded-file-name {
+            color: #ffffff;
+            font-size: 13px;
+        }
+        
+        .remove-file {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: color 0.2s;
+        }
+        
+        .remove-file:hover {
+            color: #dc2626;
+        }
+        
+        /* Loading States */
+        .loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            margin: -8px 0 0 -8px;
+            border: 2px solid transparent;
+            border-top: 2px solid #c1fa6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            margin: -7px 0 0 -7px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .form-loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .form-loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 26, 0.8);
+            z-index: 10;
+            border-radius: 8px;
+        }
+        
+        .form-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid #c1fa6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 11;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid transparent;
+            border-top: 3px solid #c1fa6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-text {
+            color: #ffffff;
+            margin-top: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        /* Shimmer Loading Styles */
+        .shimmer-card {
+            height: 230px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .shimmer-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 18px 20px 20px;
+        }
+        
+        .shimmer-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .shimmer-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .shimmer-author {
+            width: 60px;
+            height: 14px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        .shimmer-title {
+            width: 80%;
+            height: 24px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 4px;
+            margin-bottom: 14px;
+        }
+        
+        .shimmer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .shimmer-date {
+            width: 120px;
+            height: 14px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        
+        .shimmer-menu {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-tabs">
+            <button class="nav-tab">All Classes</button>
+            <button class="nav-tab active">My Lessons</button>
+
+        </div>
+        <div class="header-controls">
+         
+            <select class="sort-dropdown">
+                <option>Most recent ▾</option>
+            </select>
+            <div class="create-dropdown-container">
+                <button class="create-btn" onclick="toggleCreateDropdown(this)">+ Create new lesson <i class="ph ph-caret-down"></i></button>
+                <div class="create-dropdown-menu">
+                    <button class="create-dropdown-item" onclick="openCreateClassModal()"><i class="ph ph-chalkboard-teacher"></i>Create Class</button>
+                    <button class="create-dropdown-item" onclick="openAddStudentModal()"><i class="ph ph-user-plus"></i>Add Student</button>
+                    <button class="create-dropdown-item" onclick="openAddSubjectModal()"><i class="ph ph-book-open"></i>Add Subject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="section-title" id="materialsTitle">My Teaching Materials</h1>
+
+    <div class="notebooks-grid">
+        <!-- Dynamic content will be loaded here -->
+    </div>
+
+    <!-- Create Class Modal -->
+    <div id="createClassModal" class="management-modal">
+        <div class="modal-container">
+            <div class="modal-header-mgmt">
+                <h2 class="modal-title-mgmt"><i class="ph ph-chalkboard-teacher"></i>Create New Class</h2>
+                <button class="modal-close-mgmt" onclick="closeManagementModal('createClassModal')"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="modal-body-mgmt">
+                <form id="createClassForm">
+                    <div class="form-group">
+                        <label class="form-label">Class Name</label>
+                        <input type="text" class="form-input" placeholder="e.g., Room 101 - Mathematics" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeManagementModal('createClassModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">Create Class</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="addStudentModal" class="management-modal">
+        <div class="modal-container">
+            <div class="modal-header-mgmt">
+                <h2 class="modal-title-mgmt"><i class="ph ph-user-plus"></i>Add Student to Class</h2>
+                <button class="modal-close-mgmt" onclick="closeManagementModal('addStudentModal')"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="modal-body-mgmt">
+                <form id="addStudentForm">
+                    <div class="form-group">
+                        <label class="form-label">Select Class</label>
+                        <select class="form-select" id="classSelect" required>
+                            <option value="">Choose a class</option>
+                            <option value="math-001">Algebra Fundamentals</option>
+                            <option value="sci-001">Chemistry Lab Experiments</option>
+                            <option value="bio-001">Biology Study Guide</option>
+                            <option value="hist-001">World War II Timeline</option>
+                            <option value="cs-001">Python Programming Basics</option>
+                            <option value="art-001">Renaissance Art History</option>
+                            <option value="eng-001">Creative Writing Workshop</option>
+                            <option value="geo-001">Climate Change Studies</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Student Email</label>
+                        <input type="email" class="form-input" id="studentEmail" placeholder="student@example.com" required>
+                    </div>
+                    
+                    <div id="studentSuccess" class="form-group" style="display: none; background: #1a4d3a; border: 1px solid #22c55e; border-radius: 8px; padding: 16px; margin-top: 16px;">
+                        <div style="color: #22c55e; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                            <i class="ph ph-check-circle"></i>
+                            Student Added Successfully!
+                        </div>
+                        <div id="studentDetails" style="color: #e0e0e0; font-size: 14px; line-height: 1.5;"></div>
+                    </div>
+    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeManagementModal('addStudentModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Student</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div id="addSubjectModal" class="management-modal">
+        <div class="modal-container">
+            <div class="modal-header-mgmt">
+                <h2 class="modal-title-mgmt"><i class="ph ph-book-open"></i>Manage Subjects</h2>
+                <button class="modal-close-mgmt" onclick="closeManagementModal('addSubjectModal')"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="modal-body-mgmt">
+                <form id="addSubjectForm">
+                    <div class="form-group">
+                        <label class="form-label">Select Class</label>
+                        <select class="form-select" id="subjectClassSelect" required>
+                            <option value="">Choose a class</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject Name</label>
+                        <input type="text" class="form-input" id="subjectName" placeholder="e.g., Advanced Physics" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Upload Files</label>
+                        <div class="file-upload-area" onclick="document.getElementById('subjectFiles').click()">
+                            <i class="ph ph-upload-simple"></i>
+                            <span>Click to upload PDFs and Images</span>
+                            <small>Supports PDF, PNG, JPG, JPEG files</small>
+                        </div>
+                        <input type="file" id="subjectFiles" multiple accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+                        <div id="uploadedFiles" class="uploaded-files"></div>
+                    </div>
+                    
+                    <div id="subjectSuccess" class="form-group" style="display: none; background: #1a4d3a; border: 1px solid #22c55e; border-radius: 8px; padding: 16px; margin-top: 16px;">
+                        <div style="color: #22c55e; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                            <i class="ph ph-check-circle"></i>
+                            Subject Added Successfully!
+                        </div>
+                        <div id="subjectDetails" style="color: #e0e0e0; font-size: 14px; line-height: 1.5;"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Current Subjects</label>
+                        <div class="subject-grid" id="subjectGrid">
+                            <!-- Subjects will be loaded dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeManagementModal('addSubjectModal')">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Subject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Page Modal -->
+    <div id="materialModal" class="fullpage-modal">
+        <div class="modal-header">
+            <h2 id="modalTitle" class="modal-title">Material Details</h2>
+            <button class="modal-close" onclick="closeMaterialModal()"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="chapterId" class="chapter-id">Chapter ID: </div>
+            
+            <div class="section">
+                <h3 class="section-title">Files</h3>
+                <div class="files-container">
+                    <div class="file-item">
+                        <div class="file-icon"><i class="ph ph-file-pdf" style="color: #dc2626;"></i></div>
+                        <div class="file-name">Chapter_Notes.pdf</div>
+                        <div class="file-size">2.4 MB</div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon"><i class="ph ph-file-pdf" style="color: #dc2626;"></i></div>
+                        <div class="file-name">Practice_Problems.pdf</div>
+                        <div class="file-size">1.8 MB</div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon"><i class="ph ph-image" style="color: #059669;"></i></div>
+                        <div class="file-name">Diagram_Reference.png</div>
+                        <div class="file-size">856 KB</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">Summary</h3>
+                <div class="rag-summary">
+                    This chapter covers fundamental concepts and practical applications. Key topics include theoretical foundations, problem-solving methodologies, and real-world examples. Students will learn to apply these concepts through hands-on exercises and comprehensive assessments.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/firebase.static.js"></script>
+    <script>
+        // Initialize Firebase and check authentication
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                // User not logged in, redirect to login
+                window.location.href = '../login';
+                return;
+            }
+            
+            const userRole = localStorage.getItem(`userRole_${user.uid}`);
+            if (userRole !== 'teacher') {
+                // User is not a teacher, redirect to main page
+                alert('Access denied. This page is for teachers only.');
+                window.location.href = '../';
+                return;
+            }
+            
+            // User is authenticated and is a teacher, continue with page functionality
+            console.log('Teacher authenticated:', user.email);
+            
+            // Load classes and subjects when page loads
+            loadClasses(user.email);
+            loadTeachingMaterials(user.email);
+        });
+        
+        document.querySelectorAll('.notebook-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-menu')) {
+                    openMaterialModal(card);
+                }
+            });
+        });
+        
+        async function openMaterialModal(card) {
+            const chId = card.dataset.chid;
+            
+            try {
+                const response = await fetch('materials-data.json');
+                const data = await response.json();
+                const materialData = data[chId];
+                
+                if (materialData) {
+                    // Update URL
+                    const url = new URL(window.location);
+                    url.searchParams.set('ch', chId);
+                    window.history.pushState({}, '', url);
+                    
+                    // Update modal content
+                    document.getElementById('modalTitle').textContent = materialData.title;
+                    document.getElementById('chapterId').textContent = `Chapter ID: ${chId}`;
+                    
+                    // Update files
+                    const filesContainer = document.querySelector('.files-container');
+                    filesContainer.innerHTML = materialData.files.map(file => {
+                        let iconClass = 'ph-file';
+                        let iconColor = '#6b7280';
+                        
+                        if (file.name.endsWith('.pdf')) {
+                            iconClass = 'ph-file-pdf';
+                            iconColor = '#dc2626';
+                        } else if (file.name.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
+                            iconClass = 'ph-image';
+                            iconColor = '#059669';
+                        } else if (file.name.match(/\.(doc|docx)$/i)) {
+                            iconClass = 'ph-file-doc';
+                            iconColor = '#2563eb';
+                        } else if (file.name.match(/\.(xls|xlsx)$/i)) {
+                            iconClass = 'ph-file-xls';
+                            iconColor = '#16a34a';
+                        } else if (file.name.match(/\.(ppt|pptx)$/i)) {
+                            iconClass = 'ph-file-ppt';
+                            iconColor = '#ea580c';
+                        } else if (file.name.match(/\.(mp4|avi|mov|wmv)$/i)) {
+                            iconClass = 'ph-file-video';
+                            iconColor = '#7c3aed';
+                        } else if (file.name.match(/\.(mp3|wav|flac)$/i)) {
+                            iconClass = 'ph-file-audio';
+                            iconColor = '#db2777';
+                        }
+                        
+                        return `
+                            <div class="file-item">
+                                <div class="file-icon"><i class="ph ${iconClass}" style="color: ${iconColor};"></i></div>
+                                <div class="file-name">${file.name}</div>
+                                <div class="file-size">${file.size}</div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Update RAG summary
+                    document.querySelector('.rag-summary').textContent = materialData.ragSummary;
+                    
+                    // Show full page modal
+                    document.getElementById('materialModal').classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch (error) {
+                console.error('Failed to load material data:', error);
+            }
+        }
+        
+        function closeMaterialModal() {
+            document.getElementById('materialModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+            
+            // Remove URL param
+            const url = new URL(window.location);
+            url.searchParams.delete('ch');
+            window.history.pushState({}, '', url);
+        }
+        
+
+
+        function toggleDropdown(btn) {
+            event.stopPropagation();
+            const dropdown = btn.nextElementSibling;
+            const isVisible = dropdown.classList.contains('show');
+            
+            // Close all dropdowns
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            
+            // Toggle current dropdown
+            if (!isVisible) {
+                dropdown.classList.add('show');
+            }
+        }
+        
+        function editLesson(btn) {
+            event.stopPropagation();
+            const lessonTitle = btn.closest('.notebook-card').querySelector('.notebook-title').textContent;
+            alert(`Edit lesson: ${lessonTitle}`);
+            btn.closest('.dropdown-menu').classList.remove('show');
+        }
+        
+        function deleteLesson(btn) {
+            event.stopPropagation();
+            const lessonTitle = btn.closest('.notebook-card').querySelector('.notebook-title').textContent;
+            if (confirm(`Are you sure you want to delete "${lessonTitle}"?`)) {
+                btn.closest('.notebook-card').remove();
+            }
+            btn.closest('.dropdown-menu').classList.remove('show');
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.notebook-meta')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+            if (!e.target.closest('.create-dropdown-container')) {
+                document.querySelectorAll('.create-dropdown-menu').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+        
+        // Create dropdown functions
+        function toggleCreateDropdown(btn) {
+            const dropdown = btn.nextElementSibling;
+            const isVisible = dropdown.classList.contains('show');
+            
+            // Close all create dropdowns
+            document.querySelectorAll('.create-dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            
+            // Toggle current dropdown
+            if (!isVisible) {
+                dropdown.classList.add('show');
+            }
+        }
+        
+        // Management modal functions
+        function openCreateClassModal() {
+            document.getElementById('createClassModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        async function openAddStudentModal() {
+            const user = auth.currentUser;
+            if (user) {
+                await loadClassesForModal(user.email);
+            }
+            
+            // Hide success message when opening modal
+            document.getElementById('studentSuccess').style.display = 'none';
+            
+            document.getElementById('addStudentModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Load classes for dropdown
+        async function loadClasses(teacherEmail) {
+            showLoadingOverlay('Loading classes...');
+            try {
+                const response = await fetch(`https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/?action=getClasses&teacherEmail=${encodeURIComponent(teacherEmail)}`);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    window.teacherClasses = result.classes || [];
+                    console.log('Classes loaded:', window.teacherClasses);
+                } else {
+                    console.error('Failed to load classes');
+                    window.teacherClasses = [];
+                }
+            } catch (error) {
+                console.error('Error loading classes:', error);
+                window.teacherClasses = [];
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+        
+        // Load classes for modal dropdown
+        async function loadClassesForModal(teacherEmail) {
+            const classSelect = document.getElementById('classSelect');
+            classSelect.innerHTML = '<option value="">Loading classes...</option>';
+            classSelect.disabled = true;
+            
+            try {
+                const response = await fetch(`https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/?action=getClasses&teacherEmail=${encodeURIComponent(teacherEmail)}`);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const classes = result.classes || [];
+                    
+                    // Update class select dropdown
+                    classSelect.innerHTML = '<option value="">Choose a class</option>';
+                    
+                    classes.forEach(cls => {
+                        const option = document.createElement('option');
+                        option.value = cls.id;
+                        option.textContent = cls.name;
+                        classSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('Failed to load classes for modal');
+                    classSelect.innerHTML = '<option value="">Error loading classes</option>';
+                }
+            } catch (error) {
+                console.error('Error loading classes for modal:', error);
+                classSelect.innerHTML = '<option value="">Error loading classes</option>';
+            } finally {
+                classSelect.disabled = false;
+            }
+        }
+        
+        async function openAddSubjectModal() {
+            const user = auth.currentUser;
+            if (user) {
+                await loadClassesForSubjectModal(user.email);
+                await loadSubjects(user.email);
+            }
+            
+            // Hide success message when opening modal
+            document.getElementById('subjectSuccess').style.display = 'none';
+            
+            document.getElementById('addSubjectModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Load classes for subject modal dropdown
+        async function loadClassesForSubjectModal(teacherEmail) {
+            const classSelect = document.getElementById('subjectClassSelect');
+            classSelect.innerHTML = '<option value="">Loading classes...</option>';
+            classSelect.disabled = true;
+            
+            try {
+                const response = await fetch(`https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/?action=getClasses&teacherEmail=${encodeURIComponent(teacherEmail)}`);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const classes = result.classes || [];
+                    
+                    // Update class select dropdown
+                    classSelect.innerHTML = '<option value="">Choose a class</option>';
+                    
+                    classes.forEach(cls => {
+                        const option = document.createElement('option');
+                        option.value = cls.id;
+                        option.textContent = cls.name;
+                        classSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('Failed to load classes for subject modal');
+                    classSelect.innerHTML = '<option value="">Error loading classes</option>';
+                }
+            } catch (error) {
+                console.error('Error loading classes for subject modal:', error);
+                classSelect.innerHTML = '<option value="">Error loading classes</option>';
+            } finally {
+                classSelect.disabled = false;
+            }
+        }
+        
+        // Load subjects for display
+        async function loadSubjects(teacherEmail) {
+            const subjectGrid = document.getElementById('subjectGrid');
+            subjectGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 20px;">Loading subjects...</div>';
+            
+            try {
+                const response = await fetch(`https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/?action=getSubjects&teacherEmail=${encodeURIComponent(teacherEmail)}`);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const subjects = result.subjects || [];
+                    
+                    // Update subject grid
+                    subjectGrid.innerHTML = '';
+                    
+                    subjects.forEach(subject => {
+                        const subjectChip = document.createElement('div');
+                        subjectChip.className = 'subject-chip';
+                        subjectChip.innerHTML = `
+                            <span>${subject.name}</span>
+                            <button type="button" class="remove-subject" onclick="deleteSubject('${subject.subjectId}')"><i class="ph ph-x"></i></button>
+                        `;
+                        subjectGrid.appendChild(subjectChip);
+                    });
+                    
+                    if (subjects.length === 0) {
+                        subjectGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 20px;">No subjects created yet</div>';
+                    }
+                } else {
+                    console.error('Failed to load subjects');
+                    subjectGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #dc2626; padding: 20px;">Error loading subjects</div>';
+                }
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+                subjectGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #dc2626; padding: 20px;">Error loading subjects</div>';
+            }
+        }
+        
+        // Delete subject function
+        async function deleteSubject(subjectId) {
+            if (!confirm('Are you sure you want to delete this subject?')) {
+                return;
+            }
+            
+            showLoadingOverlay('Deleting subject...');
+            
+            try {
+                const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'deleteSubject',
+                        subjectId: subjectId
+                    })
+                });
+                
+                if (response.ok) {
+                    // Reload subjects to update the display
+                    const user = auth.currentUser;
+                    if (user) {
+                        await loadSubjects(user.email);
+                    }
+                } else {
+                    const error = await response.json();
+                    alert('Error deleting subject: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error deleting subject:', error);
+                alert('Error deleting subject. Please try again.');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+        
+        function closeManagementModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Form handlers
+        document.getElementById('createClassForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const className = this.querySelector('input[type="text"]').value;
+            const user = auth.currentUser;
+            const submitBtn = this.querySelector('.btn-primary');
+            const form = this;
+            
+            if (!user) {
+                alert('Please log in first');
+                return;
+            }
+            
+            // Add loading state
+            submitBtn.classList.add('btn-loading');
+            submitBtn.textContent = 'Creating...';
+            form.classList.add('form-loading');
+            
+            try {
+                const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'addClass',
+                        teacherEmail: user.email,
+                        className: className
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Class created successfully!');
+                    console.log('Class created:', result.class);
+                } else {
+                    const error = await response.json();
+                    alert('Error creating class: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error creating class:', error);
+                alert('Error creating class. Please try again.');
+            } finally {
+                // Remove loading state
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.textContent = 'Create Class';
+                form.classList.remove('form-loading');
+            }
+            
+            closeManagementModal('createClassModal');
+            this.reset();
+        });
+        
+        document.getElementById('addStudentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const studentEmail = document.getElementById('studentEmail').value;
+            const classId = document.getElementById('classSelect').value;
+            const user = auth.currentUser;
+            const submitBtn = this.querySelector('.btn-primary');
+            const form = this;
+            
+            if (!user) {
+                alert('Please log in first');
+                return;
+            }
+            
+            if (!studentEmail || !classId) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Add loading state
+            submitBtn.classList.add('btn-loading');
+            submitBtn.textContent = 'Adding...';
+            form.classList.add('form-loading');
+            
+            try {
+                const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'addStudent',
+                        teacherEmail: user.email,
+                        classId: classId,
+                        studentEmail: studentEmail
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Student added:', result);
+                    
+                    // Show success message with student details
+                    const successDiv = document.getElementById('studentSuccess');
+                    const detailsDiv = document.getElementById('studentDetails');
+                    
+                    detailsDiv.innerHTML = `
+                        <strong>Student ID:</strong> ${result.student.studentID}<br>
+                        <strong>Email:</strong> ${result.student.email}<br>
+                        <strong>Class:</strong> ${result.student.className}<br>
+                        <strong>Added:</strong> ${new Date(result.student.createdAt).toLocaleString()}
+                    `;
+                    
+                    successDiv.style.display = 'block';
+                    
+                    // Clear form inputs
+                    document.getElementById('studentEmail').value = '';
+                    document.getElementById('classSelect').value = '';
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successDiv.style.display = 'none';
+                    }, 5000);
+                } else {
+                    const error = await response.json();
+                    alert('Error adding student: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error adding student:', error);
+                alert('Error adding student. Please try again.');
+            } finally {
+                // Remove loading state
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.textContent = 'Add Student';
+                form.classList.remove('form-loading');
+            }
+        });
+        
+        document.getElementById('addSubjectForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const subjectName = document.getElementById('subjectName').value;
+            const classId = document.getElementById('subjectClassSelect').value;
+            const files = document.getElementById('subjectFiles').files;
+            const user = auth.currentUser;
+            const submitBtn = this.querySelector('.btn-primary');
+            const form = this;
+            
+            if (!user) {
+                alert('Please log in first');
+                return;
+            }
+            
+            if (!subjectName || !classId) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Add loading state
+            submitBtn.classList.add('btn-loading');
+            submitBtn.textContent = 'Processing...';
+            form.classList.add('form-loading');
+            
+            try {
+                // Process files for upload
+                const fileArray = [];
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    submitBtn.textContent = `Processing file ${i + 1}/${files.length}...`;
+                    const fileContent = await fileToBase64(file);
+                    fileArray.push({
+                        name: file.name,
+                        content: fileContent,
+                        type: file.type,
+                        size: file.size
+                    });
+                }
+                
+                submitBtn.textContent = 'Uploading...';
+                
+                const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'addSubject',
+                        teacherEmail: user.email,
+                        classId: classId,
+                        subjectName: subjectName,
+                        files: fileArray
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Subject added:', result);
+                    
+                    // Show success message with subject details
+                    const successDiv = document.getElementById('subjectSuccess');
+                    const detailsDiv = document.getElementById('subjectDetails');
+                    
+                    detailsDiv.innerHTML = `
+                        <strong>Subject ID:</strong> ${result.subject.subjectId}<br>
+                        <strong>Name:</strong> ${result.subject.name}<br>
+                        <strong>Files Uploaded:</strong> ${result.subject.files ? result.subject.files.length : 0}<br>
+                        <strong>Added:</strong> ${new Date(result.subject.createdAt).toLocaleString()}
+                    `;
+                    
+                    successDiv.style.display = 'block';
+                    
+                    // Clear form inputs
+                    document.getElementById('subjectName').value = '';
+                    document.getElementById('subjectClassSelect').value = '';
+                    document.getElementById('subjectFiles').value = '';
+                    document.getElementById('uploadedFiles').innerHTML = '';
+                    
+                    // Reload subjects to update the display
+                    await loadSubjects(user.email);
+                    await loadTeachingMaterials(user.email);
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successDiv.style.display = 'none';
+                    }, 5000);
+                } else {
+                    const error = await response.json();
+                    alert('Error adding subject: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error adding subject:', error);
+                alert('Error adding subject. Please try again.');
+            } finally {
+                // Remove loading state
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.textContent = 'Add Subject';
+                form.classList.remove('form-loading');
+            }
+        });
+        
+        // Helper function to convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+        
+        // File upload handling
+        document.getElementById('subjectFiles').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const uploadedFilesContainer = document.getElementById('uploadedFiles');
+            uploadedFilesContainer.innerHTML = ''; // Clear previous files
+            
+            Array.from(files).forEach(file => {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'uploaded-file';
+                
+                const fileIcon = file.type.includes('pdf') ? 'ph-file-pdf' : 'ph-image';
+                const fileColor = file.type.includes('pdf') ? '#dc2626' : '#059669';
+                const fileSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+                
+                fileDiv.innerHTML = `
+                    <div class="uploaded-file-info">
+                        <i class="ph ${fileIcon}" style="color: ${fileColor};"></i>
+                        <span class="uploaded-file-name">${file.name} (${fileSize})</span>
+                    </div>
+                    <button type="button" class="remove-file" onclick="removeUploadedFile(this)"><i class="ph ph-x"></i></button>
+                `;
+                
+                uploadedFilesContainer.appendChild(fileDiv);
+            });
+        });
+        
+        function removeUploadedFile(btn) {
+            btn.closest('.uploaded-file').remove();
+        }
+        
+        function removeStudent(btn) {
+            if (confirm('Remove this student from the class?')) {
+                btn.closest('.student-item').remove();
+            }
+        }
+        
+        // Show shimmer loading
+        function showShimmerLoading() {
+            const grid = document.querySelector('.notebooks-grid');
+            const title = document.getElementById('materialsTitle');
+            
+            title.innerHTML = '<div style="width: 300px; height: 32px; background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px;"></div>';
+            
+            grid.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const shimmerCard = document.createElement('div');
+                shimmerCard.className = 'shimmer-card';
+                shimmerCard.style.position = 'relative';
+                shimmerCard.innerHTML = `
+                    <div class="shimmer-content">
+                        <div class="shimmer-header">
+                            <div class="shimmer-icon"></div>
+                            <div class="shimmer-author"></div>
+                        </div>
+                        <div class="shimmer-title"></div>
+                        <div class="shimmer-meta">
+                            <div class="shimmer-date"></div>
+                            <div class="shimmer-menu"></div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(shimmerCard);
+            }
+        }
+        
+        // Load teaching materials (subjects)
+        async function loadTeachingMaterials(teacherEmail) {
+            showShimmerLoading();
+            
+            try {
+                const response = await fetch(`https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/?action=getSubjects&teacherEmail=${encodeURIComponent(teacherEmail)}`);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const subjects = result.subjects || [];
+                    
+                    // Restore title
+                    document.getElementById('materialsTitle').textContent = 'My Teaching Materials';
+                    
+                    // Clear shimmer and add subjects
+                    const grid = document.querySelector('.notebooks-grid');
+                    grid.innerHTML = '';
+                    
+                    for (const subject of subjects) {
+                        // Process existing files if needed
+                        await processExistingFiles(subject.subjectId);
+                        
+                        const emoji = await generateEmoji(subject.name);
+                        const card = createSubjectCard(subject, emoji);
+                        grid.appendChild(card);
+                    }
+                    
+                    if (subjects.length === 0) {
+                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">No subjects created yet. Click "+ Create new lesson" to add your first subject.</div>';
+                    }
+                } else {
+                    console.error('Failed to load subjects');
+                    document.getElementById('materialsTitle').textContent = 'My Teaching Materials';
+                }
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+                document.getElementById('materialsTitle').textContent = 'My Teaching Materials';
+            }
+        }
+        
+        // Process existing files for RAG summary
+        async function processExistingFiles(subjectId) {
+            try {
+                const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'processExistingFiles',
+                        subjectId: subjectId
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(`Processed ${result.processedCount} files for subject ${subjectId}`);
+                }
+            } catch (error) {
+                console.error('Error processing existing files:', error);
+            }
+        }
+        
+        // Generate emoji for subject
+        async function generateEmoji(subjectName) {
+            try {
+                const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'generateEmoji',
+                        subjectName: subjectName
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    return result.emoji || '📚';
+                } else {
+                    return '📚';
+                }
+            } catch (error) {
+                console.error('Error generating emoji:', error);
+                return '📚';
+            }
+        }
+        
+        // Loading overlay functions
+        function showLoadingOverlay(message = 'Loading...') {
+            const overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.id = 'loadingOverlay';
+            overlay.innerHTML = `
+                <div>
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">${message}</div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+        
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+        
+        // Create subject card element
+        function createSubjectCard(subject, emoji) {
+            const card = document.createElement('div');
+            const cardClass = `card-${Math.floor(Math.random() * 8) + 1}`;
+            card.className = `notebook-card ${cardClass}`;
+            card.dataset.subjectId = subject.subjectId;
+            
+            const fileCount = subject.files ? subject.files.length : 0;
+            const createdDate = new Date(subject.createdAt).toLocaleDateString('en-US', { 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric' 
+            });
+            
+            card.innerHTML = `
+                <div class="notebook-content">
+                    <div class="notebook-header">
+                        <div class="notebook-icon" style="background: rgba(255,255,255,0.2); color: white;">${emoji}</div>
+                        <span class="notebook-author">Subject</span>
+                    </div>
+                    <h2 class="notebook-title">${subject.name}</h2>
+                    <div class="notebook-meta">
+                        <span>${createdDate} · ${fileCount} files</span>
+                        <button class="menu-btn" onclick="toggleDropdown(this)">⋯</button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item" onclick="editSubject('${subject.subjectId}')">Edit</button>
+                            <button class="dropdown-item" onclick="deleteSubjectFromCard('${subject.subjectId}')">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Delete subject from card
+        async function deleteSubjectFromCard(subjectId) {
+            if (!confirm('Are you sure you want to delete this subject?')) {
+                return;
+            }
+            
+            showLoadingOverlay('Deleting subject...');
+            
+            try {
+                const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'deleteSubject',
+                        subjectId: subjectId
+                    })
+                });
+                
+                if (response.ok) {
+                    // Reload teaching materials
+                    const user = auth.currentUser;
+                    if (user) {
+                        await loadTeachingMaterials(user.email);
+                    }
+                } else {
+                    const error = await response.json();
+                    alert('Error deleting subject: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error deleting subject:', error);
+                alert('Error deleting subject. Please try again.');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+        
+        // Edit subject placeholder
+        function editSubject(subjectId) {
+            alert('Edit functionality coming soon!');
+        }
+        
+        // Close modals on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.management-modal.show').forEach(modal => {
+                    modal.classList.remove('show');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>

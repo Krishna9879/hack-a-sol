@@ -1,0 +1,250 @@
+{
+  "quizId": "ch001",
+  "quizName": "Thermodynamics Fundamentals",
+  "timeAllowed": 30,
+  "description": "Test your understanding of basic thermodynamics principles",
+  "totalQuestions": 20,
+  "passingScore": 70,
+  "questions": [
+    {
+      "id": 1,
+      "text": "What is the first law of thermodynamics?",
+      "options": [
+        "Energy cannot be created or destroyed, only transformed",
+        "Heat flows from hot to cold objects",
+        "Entropy of an isolated system always increases",
+        "Temperature is a measure of kinetic energy"
+      ],
+      "correct": 0,
+      "difficulty": "easy"
+    },
+    {
+      "id": 2,
+      "text": "Which process occurs at constant temperature?",
+      "options": [
+        "Adiabatic process",
+        "Isothermal process", 
+        "Isobaric process",
+        "Isochoric process"
+      ],
+      "correct": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": 3,
+      "text": "What is entropy?",
+      "options": [
+        "A measure of temperature",
+        "A measure of pressure",
+        "A measure of disorder or randomness",
+        "A measure of volume"
+      ],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "id": 4,
+      "text": "In a Carnot engine, efficiency depends on:",
+      "options": [
+        "Working substance used",
+        "Size of the engine",
+        "Temperature of hot and cold reservoirs",
+        "Speed of operation"
+      ],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "id": 5,
+      "text": "What happens in an adiabatic process?",
+      "options": [
+        "Temperature remains constant",
+        "Pressure remains constant",
+        "No heat exchange occurs",
+        "Volume remains constant"
+      ],
+      "correct": 2,
+      "difficulty": "easy"
+    },
+    {
+      "id": 6,
+      "text": "The second law of thermodynamics states that:",
+      "options": [
+        "Energy is conserved",
+        "Heat cannot flow from cold to hot spontaneously",
+        "Work can be completely converted to heat",
+        "All processes are reversible"
+      ],
+      "correct": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": 7,
+      "text": "What is the unit of entropy?",
+      "options": [
+        "J/K",
+        "J/mol",
+        "K/J",
+        "mol/J"
+      ],
+      "correct": 0,
+      "difficulty": "easy"
+    },
+    {
+      "id": 8,
+      "text": "In which process does pressure remain constant?",
+      "options": [
+        "Isothermal",
+        "Adiabatic",
+        "Isobaric",
+        "Isochoric"
+      ],
+      "correct": 2,
+      "difficulty": "easy"
+    },
+    {
+      "id": 9,
+      "text": "The efficiency of a heat engine is defined as:",
+      "options": [
+        "Work output / Heat input",
+        "Heat input / Work output",
+        "Heat rejected / Heat input",
+        "Work output / Heat rejected"
+      ],
+      "correct": 0,
+      "difficulty": "medium"
+    },
+    {
+      "id": 10,
+      "text": "What is absolute zero temperature?",
+      "options": [
+        "0°C",
+        "0°F",
+        "0 K",
+        "-100°C"
+      ],
+      "correct": 2,
+      "difficulty": "easy"
+    },
+    {
+      "id": 11,
+      "text": "In a reversible process:",
+      "options": [
+        "Entropy increases",
+        "Entropy decreases",
+        "Entropy remains constant",
+        "Entropy becomes zero"
+      ],
+      "correct": 2,
+      "difficulty": "medium"
+    },
+    {
+      "id": 12,
+      "text": "The ideal gas law is represented by:",
+      "options": [
+        "PV = nRT",
+        "PV = RT",
+        "P = nRT/V",
+        "All of the above"
+      ],
+      "correct": 3,
+      "difficulty": "easy"
+    },
+    {
+      "id": 13,
+      "text": "What is the coefficient of performance (COP) for a refrigerator?",
+      "options": [
+        "Heat removed / Work input",
+        "Work input / Heat removed",
+        "Heat rejected / Work input",
+        "Work input / Heat rejected"
+      ],
+      "correct": 0,
+      "difficulty": "hard"
+    },
+    {
+      "id": 14,
+      "text": "In a throttling process:",
+      "options": [
+        "Enthalpy remains constant",
+        "Temperature remains constant",
+        "Pressure remains constant",
+        "Volume remains constant"
+      ],
+      "correct": 0,
+      "difficulty": "hard"
+    },
+    {
+      "id": 15,
+      "text": "The triple point of water occurs at:",
+      "options": [
+        "273.15 K and 1 atm",
+        "273.16 K and 611.657 Pa",
+        "0°C and 1 atm",
+        "100°C and 1 atm"
+      ],
+      "correct": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": 16,
+      "text": "What is the relationship between Celsius and Kelvin?",
+      "options": [
+        "K = °C + 273.15",
+        "K = °C - 273.15",
+        "°C = K + 273.15",
+        "°C = K × 273.15"
+      ],
+      "correct": 0,
+      "difficulty": "easy"
+    },
+    {
+      "id": 17,
+      "text": "In a polytropic process, PV^n = constant. For an isothermal process, n equals:",
+      "options": [
+        "0",
+        "1",
+        "γ (gamma)",
+        "∞ (infinity)"
+      ],
+      "correct": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": 18,
+      "text": "The Carnot cycle consists of:",
+      "options": [
+        "Two isothermal and two adiabatic processes",
+        "Two isobaric and two isochoric processes",
+        "Four isothermal processes",
+        "Four adiabatic processes"
+      ],
+      "correct": 0,
+      "difficulty": "medium"
+    },
+    {
+      "id": 19,
+      "text": "What is the maximum theoretical efficiency of a heat engine operating between 500K and 300K?",
+      "options": [
+        "40%",
+        "60%",
+        "50%",
+        "70%"
+      ],
+      "correct": 0,
+      "difficulty": "hard"
+    },
+    {
+      "id": 20,
+      "text": "The specific heat at constant pressure (Cp) is always:",
+      "options": [
+        "Less than Cv",
+        "Equal to Cv",
+        "Greater than Cv",
+        "Zero"
+      ],
+      "correct": 2,
+      "difficulty": "medium"
+    }
+  ]
+}

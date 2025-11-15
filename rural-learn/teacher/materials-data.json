@@ -1,0 +1,190 @@
+{
+  "math-001": {
+    "title": "Algebra Fundamentals",
+    "files": [
+      {
+        "name": "Linear_Equations_Guide.pdf",
+        "size": "3.2 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Quadratic_Functions.pdf", 
+        "size": "2.8 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Practice_Worksheets.pdf",
+        "size": "1.5 MB", 
+        "icon": "📄"
+      },
+      {
+        "name": "Graph_Examples.png",
+        "size": "945 KB",
+        "icon": "🖼️"
+      }
+    ],
+    "ragSummary": "This comprehensive algebra fundamentals course covers essential mathematical concepts including linear equations, quadratic functions, and polynomial operations. Students will learn to solve systems of equations using substitution and elimination methods, graph linear and quadratic functions, and understand the relationship between algebraic expressions and their graphical representations. The curriculum emphasizes problem-solving strategies, real-world applications of algebraic concepts, and develops critical thinking skills through step-by-step solution processes. Key topics include factoring techniques, working with rational expressions, and understanding function notation. Assessment methods include regular practice problems, group projects, and comprehensive examinations that test both computational skills and conceptual understanding."
+  },
+  "sci-001": {
+    "title": "Chemistry Lab Experiments",
+    "files": [
+      {
+        "name": "Safety_Protocols.pdf",
+        "size": "2.1 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Acid_Base_Reactions.pdf",
+        "size": "4.3 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Lab_Equipment_Guide.pdf",
+        "size": "3.7 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Periodic_Table_Reference.png",
+        "size": "1.2 MB",
+        "icon": "🖼️"
+      }
+    ],
+    "ragSummary": "The chemistry laboratory experiments course provides hands-on experience with fundamental chemical principles and laboratory techniques. Students will conduct controlled experiments involving acid-base reactions, oxidation-reduction processes, and qualitative analysis procedures. Safety protocols are emphasized throughout, including proper handling of chemicals, use of personal protective equipment, and emergency procedures. The course covers essential laboratory skills such as accurate measurement techniques, data collection and analysis, and scientific report writing. Students will learn to use various laboratory instruments including spectrophotometers, pH meters, and analytical balances. Experiments are designed to reinforce theoretical concepts learned in lecture, demonstrating chemical principles through observable phenomena and quantitative measurements."
+  },
+  "bio-001": {
+    "title": "Biology Study Guide", 
+    "files": [
+      {
+        "name": "Cell_Structure_Notes.pdf",
+        "size": "2.9 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Genetics_Overview.pdf",
+        "size": "3.4 MB", 
+        "icon": "📄"
+      },
+      {
+        "name": "Ecosystem_Diagrams.pdf",
+        "size": "2.2 MB",
+        "icon": "📄"
+      }
+    ],
+    "ragSummary": "This biology study guide encompasses fundamental biological concepts from cellular structure to ecosystem dynamics. The curriculum covers cell biology including organelle functions, membrane transport, and cellular respiration processes. Genetics sections explore DNA structure, protein synthesis, inheritance patterns, and modern biotechnology applications. Students will study evolutionary theory, natural selection mechanisms, and biodiversity concepts. The course includes detailed examination of human body systems, plant biology, and ecological relationships. Laboratory components involve microscopy techniques, genetic crosses, and field studies. Assessment includes both theoretical understanding and practical application of biological principles through research projects and experimental design."
+  },
+  "hist-001": {
+    "title": "World War II Timeline",
+    "files": [
+      {
+        "name": "Timeline_Overview.pdf",
+        "size": "4.1 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Primary_Sources.pdf",
+        "size": "5.2 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Battle_Maps.pdf",
+        "size": "3.8 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Historical_Photos.zip",
+        "size": "12.4 MB",
+        "icon": "📦"
+      }
+    ],
+    "ragSummary": "The World War II timeline course provides comprehensive coverage of the global conflict from 1939-1945, examining political, social, and economic factors that led to war. Students analyze primary source documents, including speeches, letters, and government records to understand multiple perspectives on historical events. The curriculum covers major battles, strategic decisions, and their consequences on both military and civilian populations. Special attention is given to the Holocaust, resistance movements, and the war's impact on different regions worldwide. Students develop critical thinking skills through document analysis, timeline construction, and comparative studies of different nations' experiences during the war period."
+  },
+  "cs-001": {
+    "title": "Python Programming Basics",
+    "files": [
+      {
+        "name": "Python_Syntax_Guide.pdf",
+        "size": "2.7 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Code_Examples.py",
+        "size": "156 KB",
+        "icon": "🐍"
+      },
+      {
+        "name": "Project_Templates.zip",
+        "size": "3.1 MB",
+        "icon": "📦"
+      }
+    ],
+    "ragSummary": "Python programming basics introduces students to fundamental programming concepts using Python's accessible syntax. The course covers variables, data types, control structures, functions, and object-oriented programming principles. Students learn to write clean, efficient code following Python best practices and PEP 8 style guidelines. Practical projects include data analysis, web scraping, and simple game development to demonstrate real-world applications. The curriculum emphasizes problem-solving methodologies, debugging techniques, and code documentation. Students work with popular Python libraries such as NumPy, Pandas, and Matplotlib for data manipulation and visualization. Assessment includes coding assignments, project-based learning, and collaborative programming exercises."
+  },
+  "art-001": {
+    "title": "Renaissance Art History",
+    "files": [
+      {
+        "name": "Renaissance_Masters.pdf",
+        "size": "6.8 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Art_Techniques.pdf",
+        "size": "4.2 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Gallery_Images.zip",
+        "size": "15.7 MB",
+        "icon": "📦"
+      }
+    ],
+    "ragSummary": "Renaissance art history explores the revolutionary artistic movement that transformed European culture from the 14th to 17th centuries. Students examine works by master artists including Leonardo da Vinci, Michelangelo, and Raphael, analyzing their innovative techniques and cultural significance. The course covers the development of perspective, chiaroscuro, and sfumato techniques that defined Renaissance aesthetics. Students study the patronage system, religious and secular themes, and the relationship between art and humanism. The curriculum includes virtual museum tours, comparative analysis of artistic styles, and examination of how Renaissance art influenced subsequent artistic movements. Assessment involves visual analysis papers, research projects, and creative interpretation exercises."
+  },
+  "eng-001": {
+    "title": "Creative Writing Workshop",
+    "files": [
+      {
+        "name": "Writing_Techniques.pdf",
+        "size": "2.3 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Sample_Stories.pdf",
+        "size": "1.8 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Prompt_Collection.pdf",
+        "size": "987 KB",
+        "icon": "📄"
+      }
+    ],
+    "ragSummary": "The creative writing workshop develops students' abilities to craft compelling narratives across various genres including short fiction, poetry, and creative nonfiction. Students learn fundamental elements of storytelling such as character development, plot structure, dialogue, and setting creation. The course emphasizes the writing process from initial brainstorming through multiple drafts to final revision. Peer review sessions provide collaborative feedback and editing experience. Students explore different narrative techniques, point of view, and voice development while studying works by established authors for inspiration and technique analysis. The workshop format encourages experimentation with style and genre while building confidence in creative expression and critical evaluation skills."
+  },
+  "geo-001": {
+    "title": "Climate Change Studies",
+    "files": [
+      {
+        "name": "Climate_Data_Analysis.pdf",
+        "size": "4.5 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Global_Temperature_Charts.xlsx",
+        "size": "2.1 MB",
+        "icon": "📊"
+      },
+      {
+        "name": "Research_Methods.pdf",
+        "size": "3.2 MB",
+        "icon": "📄"
+      },
+      {
+        "name": "Satellite_Images.zip",
+        "size": "8.9 MB",
+        "icon": "📦"
+      }
+    ],
+    "ragSummary": "Climate change studies examines the scientific evidence, causes, and consequences of global climate change through interdisciplinary analysis. Students learn to interpret climate data, understand greenhouse gas effects, and analyze temperature and precipitation patterns over time. The course covers natural climate variability versus anthropogenic influences, using real-world data sets and satellite imagery. Students explore mitigation and adaptation strategies, policy responses, and the socioeconomic impacts of climate change on different regions and populations. Laboratory work includes data analysis using statistical software, climate modeling exercises, and field studies of local environmental changes. The curriculum emphasizes critical evaluation of scientific literature and development of evidence-based arguments about climate science and policy."
+  }
+}

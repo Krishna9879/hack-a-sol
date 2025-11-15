@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Setu: Your AI learning mentor</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+        <script>
+        const timestamp = Date.now();
+        document.write(`<script src="quiz.js?t=${timestamp}"><\/script>`);
+        document.write(`<link rel="stylesheet" href="styles.css?t=${timestamp}">`);
+    </script>
+
+</head>
+<body x-data="quizApp()">
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#1a1a1a" viewBox="0 0 256 256"><path d="M200,168a32.06,32.06,0,0,0-31,24H72a32,32,0,0,1,0-64h96a40,40,0,0,0,0-80H72a8,8,0,0,0,0,16h96a24,24,0,0,1,0,48H72a48,48,0,0,0,0,96h97a32,32,0,1,0,31-40Zm0,48a16,16,0,1,1,16-16A16,16,0,0,1,200,216Z"></path></svg>
+            </div>
+            <span class="header-title">Setu</span>
+        </div>
+        <div class="header-right">
+     
+            <button class="icon-btn">
+                <i class="ph ph-user ph"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="sidebar" :class="{ 'mobile-visible': sidebarOpen }">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Units</span>
+                <button class="icon-btn">
+                    <i class="ph ph-list ph"></i>
+                </button>
+            </div>
+
+            <div class="search-box">
+                <i class="ph ph-magnifying-glass ph"></i>
+                <input type="text" placeholder="Search the unit or chapter" x-model="searchQuery">
+            </div>
+
+            <div x-show="showShimmer">
+                <template x-for="i in 16" :key="i">
+                    <div class="source-item shimmer-item">
+                        <div class="source-info">
+                            <div class="shimmer-icon"></div>
+                            <div class="shimmer-text"></div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            
+            <div x-show="!showShimmer">
+                <template x-for="unit in filteredUnits" :key="unit.name">
+                    <div class="source-item" :class="{ 'active': unit.active }">
+                        <div class="source-info">
+                            <span class="file-emoji" x-text="unit.emoji"></span>
+                            <span class="source-name" x-text="unit.name"></span>
+                        </div>
+                        <i class="ph ph-check checkmark" x-show="unit.active"></i>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+
+        <div class="content">
+            <div class="content-header">
+                <div class="content-header-left">
+                    <button class="icon-btn" @click="toggleSidebar()">
+                        <i class="ph ph-sidebar ph"></i>
+                    </button>
+                    <span class="content-title">Quiz</span>
+                    <button class="icon-btn">
+                        <i class="ph ph-info ph"></i>
+                    </button>
+                </div>
+                <div>
+                    <button class="icon-btn" @click="toggleRightSidebar()">
+                        <i class="ph ph-sidebar-simple ph"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <div class="quiz-header">
+                    <h1 class="main-title" x-text="quizName"></h1>
+                    <div class="quiz-progress">
+                        <span class="question-counter" x-text="`Question ${currentQuestion + 1} of ${totalQuestions}`"></span>
+                        <div class="timer" x-show="!quizSubmitted">
+                            <i class="ph ph-timer"></i>
+                            <span x-text="formattedTimeRemaining"></span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" :style="`width: ${progress}%`"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-question" x-show="loaded && questions.length > 0 && !showEmptyState">
+                    <h2 class="question-text" x-text="currentQuestionData.text"></h2>
+                    
+                    <div class="quiz-options">
+                        <template x-for="(option, index) in currentQuestionData.options" :key="index">
+                            <div class="quiz-option">
+                                <input type="radio" 
+                                       :id="`option${index}`" 
+                                       :name="`question${currentQuestionData.id}`" 
+                                       :value="index"
+                                       :checked="isSelected(currentQuestionData.id, index)"
+                                       @change="selectAnswer(currentQuestionData.id, index)">
+                                <label :for="`option${index}`" class="quiz-option-label">
+                                    <span class="option-letter" x-text="String.fromCharCode(65 + index)"></span>
+                                    <span class="option-text" x-text="option"></span>
+                                </label>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                
+                <div x-show="!loaded && !showEmptyState" class="loading-message">
+                    <p>Loading quiz questions...</p>
+                </div>
+                
+                <!-- Empty State -->
+                <div x-show="showEmptyState" class="quiz-empty-state">
+                    <div class="empty-icon">
+                        <i class="ph ph-question" style="font-size: 64px; color: #666;"></i>
+                    </div>
+                    <h2 class="empty-title">Quiz Not Found</h2>
+                    <p class="empty-text">The quiz you're looking for doesn't exist or the link is invalid. Please check the URL or go back to select a valid quiz.</p>
+                    <button class="btn-primary" onclick="window.history.back()" :disabled="true" style="opacity: 0.5; cursor: not-allowed;">
+                        <i class="ph ph-arrow-left"></i>
+                        Go Back
+                    </button>
+                </div>
+
+                <div class="quiz-actions" x-show="!quizSubmitted && !showEmptyState">
+                    <button class="btn-secondary" 
+                            @click="previousQuestion()" 
+                            :disabled="currentQuestion === 0">
+                        <i class="ph ph-arrow-left ph"></i>
+                        Previous
+                    </button>
+                    <button class="btn-primary" 
+                            @click="nextQuestion()" 
+                            :disabled="currentQuestion === totalQuestions - 1">
+                        Next
+                        <i class="ph ph-arrow-right ph"></i>
+                    </button>
+                </div>
+                
+                <div class="quiz-results" x-show="quizSubmitted">
+                    <div class="results-card">
+                        <h3>Quiz Completed!</h3>
+                        <div class="score-display">
+                            <span class="score-value" x-text="`${score}%`"></span>
+                            <span class="score-label">Final Score</span>
+                        </div>
+                        <div class="results-stats">
+                            <div class="stat">
+                                <span class="stat-label">Correct Answers:</span>
+                                <span x-text="`${Math.round(score * totalQuestions / 100)} / ${totalQuestions}`"></span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Passing Score:</span>
+                                <span x-text="`${quizData.passingScore}%`"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Submit Button -->
+                <div class="mobile-submit" x-show="!quizSubmitted && !showEmptyState">
+                    <button class="submit-quiz-btn mobile" 
+                            @click="submitQuiz()" 
+                            :disabled="quizSubmitted">
+                        <i class="ph ph-check"></i>
+                        Submit Quiz
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="right-sidebar" :class="{ 'mobile-visible': rightSidebarOpen }">
+            <div class="studio-header">
+                <span class="studio-title">Quiz Progress</span>
+                <button class="icon-btn">
+                    <i class="ph ph-list ph"></i>
+                </button>
+            </div>
+
+            <div class="quiz-info-box">
+                <div class="quiz-meta">
+                    <div class="meta-item">
+                        <i class="ph ph-clock"></i>
+                        <span x-text="`${timeAllowed} min`"></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="ph ph-list-numbers"></i>
+                        <span x-text="`${totalQuestions} questions`"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quiz-stats">
+                <div class="stat-card completed">
+                    <div class="stat-icon">
+                        <i class="ph ph-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" x-text="answeredCount"></div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card progress">
+                    <div class="stat-icon">
+                        <i class="ph ph-chart-pie"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" x-text="`${Math.round(progress)}%`"></div>
+                        <div class="stat-label">Progress</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-navigation">
+                <div class="nav-title">Questions</div>
+                <div class="question-grid">
+                    <template x-for="(question, index) in questions" :key="question.id">
+                        <div class="question-nav" 
+                             :class="{
+                                 'current': index === currentQuestion,
+                                 'answered': getQuestionStatus(index) === 'answered'
+                             }"
+                             @click="goToQuestion(index)"
+                             x-text="index + 1">
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <button class="submit-quiz-btn desktop" 
+                    @click="submitQuiz()" 
+                    :disabled="quizSubmitted"
+                    x-show="!showEmptyState"
+                    x-text="quizSubmitted ? 'Quiz Submitted' : 'Submit Quiz'">
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay for mobile sidebars -->
+    <div class="overlay" 
+         :class="{ 'active': sidebarOpen || rightSidebarOpen }"
+         @click="closeSidebars()"></div>
+
+    <!-- Results Modal -->
+    <div class="modal-overlay" x-show="showModal" x-transition>
+        <div class="modal" @click.away="showModal = false">
+            <div class="modal-header">
+                <h3>Quiz Completed!</h3>
+                <button class="modal-close" @click="showModal = false">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-score">
+                    <div class="score-circle">
+                        <span class="score-number" x-text="`${score}%`"></span>
+                    </div>
+                    <p class="score-status" x-text="score >= (quizData.passingScore || 70) ? 'Passed!' : 'Failed'"></p>
+                </div>
+                <div class="modal-stats">
+                    <div class="stat-row">
+                        <span>Score:</span>
+                        <span x-text="`${score}%`"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Correct Answers:</span>
+                        <span x-text="`${Math.round(score * totalQuestions / 100)} / ${totalQuestions}`"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Total Time:</span>
+                        <span x-text="`${Math.round(totalTimeSpent/1000)}s`"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Average per Question:</span>
+                        <span x-text="`${Math.round(avgTimePerQuestion/1000)}s`"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" @click="showModal = false">Close</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

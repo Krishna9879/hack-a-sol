@@ -1,0 +1,57 @@
+{
+  "chapterId": "ch001",
+  "chapterName": "Thermodynamics Fundamentals",
+  "totalCards": 10,
+  "flashcards": [
+    {
+      "id": 1,
+      "front": "What is the first law of thermodynamics?",
+      "back": "Energy cannot be created or destroyed, only transformed from one form to another. Also known as the law of conservation of energy."
+    },
+    {
+      "id": 2,
+      "front": "What is entropy?",
+      "back": "A measure of disorder or randomness in a system. It tends to increase in isolated systems according to the second law of thermodynamics."
+    },
+    {
+      "id": 3,
+      "front": "What is an isothermal process?",
+      "back": "A thermodynamic process that occurs at constant temperature. Heat is exchanged to maintain constant temperature."
+    },
+    {
+      "id": 4,
+      "front": "What is an adiabatic process?",
+      "back": "A process where no heat is exchanged between the system and surroundings. Temperature changes due to work done."
+    },
+    {
+      "id": 5,
+      "front": "What is the second law of thermodynamics?",
+      "back": "Heat cannot flow spontaneously from a cold body to a hot body. Entropy of an isolated system always increases."
+    },
+    {
+      "id": 6,
+      "front": "What is the unit of entropy?",
+      "back": "J/K (Joules per Kelvin) in SI units."
+    },
+    {
+      "id": 7,
+      "front": "What is an isobaric process?",
+      "back": "A thermodynamic process that occurs at constant pressure."
+    },
+    {
+      "id": 8,
+      "front": "What is absolute zero?",
+      "back": "The lowest possible temperature (0 K or -273.15°C) where all molecular motion theoretically stops."
+    },
+    {
+      "id": 9,
+      "front": "What is heat engine efficiency?",
+      "back": "The ratio of work output to heat input: η = W/Q_in = (Q_in - Q_out)/Q_in"
+    },
+    {
+      "id": 10,
+      "front": "What is the relationship between Celsius and Kelvin?",
+      "back": "K = °C + 273.15. Kelvin is the absolute temperature scale starting from absolute zero."
+    }
+  ]
+}

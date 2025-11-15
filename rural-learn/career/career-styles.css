@@ -1,0 +1,12 @@
+/* Minimal styles for career path visualization */
+.career-canvas {
+    width: 100%;
+    height: 100%;
+    cursor: default;
+    background: transparent;
+    display: block;
+}
+
+.career-canvas:hover {
+    cursor: pointer;
+}

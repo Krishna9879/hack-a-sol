@@ -1,0 +1,152 @@
+{
+  "ch001": {
+    "chapterId": "ch001",
+    "chapterName": "Thermodynamics",
+    "center": {
+      "title": "Thermodynamics",
+      "x": 400,
+      "y": 100
+    },
+    "careers": [
+      {
+        "id": 1,
+        "title": "Mechanical Engineer",
+        "x": 200,
+        "y": 250,
+        "salary": "$75k-$120k",
+        "education": "Bachelor's in Mechanical Engineering",
+        "description": "Design and develop mechanical systems, engines, and thermal equipment.",
+        "skills": ["CAD Design", "Thermodynamics", "Heat Transfer", "Materials Science"],
+        "pathway": [
+          "Complete Bachelor's degree in Mechanical Engineering",
+          "Gain internship experience in automotive or aerospace",
+          "Obtain Professional Engineer (PE) license",
+          "Specialize in thermal systems or HVAC"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Energy Analyst",
+        "x": 400,
+        "y": 250,
+        "salary": "$60k-$95k",
+        "education": "Bachelor's in Engineering/Physics",
+        "description": "Analyze energy consumption patterns and optimize energy systems.",
+        "skills": ["Data Analysis", "Energy Modeling", "Thermodynamics", "Statistics"],
+        "pathway": [
+          "Bachelor's in Engineering, Physics, or related field",
+          "Learn energy modeling software (EnergyPlus, HOMER)",
+          "Gain experience with renewable energy systems",
+          "Obtain energy efficiency certifications"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "HVAC Engineer",
+        "x": 600,
+        "y": 250,
+        "salary": "$65k-$110k",
+        "education": "Bachelor's in Mechanical Engineering",
+        "description": "Design heating, ventilation, and air conditioning systems.",
+        "skills": ["HVAC Design", "Building Systems", "Energy Efficiency", "AutoCAD"],
+        "pathway": [
+          "Bachelor's in Mechanical Engineering",
+          "Complete HVAC-specific coursework",
+          "Gain hands-on experience with HVAC contractors",
+          "Obtain HVAC certifications (NATE, EPA)"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Power Plant Engineer",
+        "x": 200,
+        "y": 400,
+        "salary": "$80k-$130k",
+        "education": "Bachelor's in Mechanical/Electrical Engineering",
+        "description": "Operate and maintain power generation equipment and systems.",
+        "skills": ["Power Systems", "Turbines", "Boilers", "Safety Protocols"],
+        "pathway": [
+          "Bachelor's in Mechanical or Electrical Engineering",
+          "Complete power plant operator training",
+          "Gain experience in utilities or power generation",
+          "Obtain power plant operator licenses"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Research Scientist",
+        "x": 400,
+        "y": 400,
+        "salary": "$70k-$140k",
+        "education": "PhD in Physics/Engineering",
+        "description": "Conduct research on advanced thermodynamic systems and materials.",
+        "skills": ["Research Methods", "Advanced Mathematics", "Lab Techniques", "Publishing"],
+        "pathway": [
+          "Bachelor's in Physics or Engineering",
+          "Complete Master's degree with research focus",
+          "Pursue PhD in thermodynamics or related field",
+          "Publish research and build academic network"
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Process Engineer",
+        "x": 600,
+        "y": 400,
+        "salary": "$75k-$125k",
+        "education": "Bachelor's in Chemical Engineering",
+        "description": "Optimize industrial processes involving heat and mass transfer.",
+        "skills": ["Process Design", "Chemical Engineering", "Process Control", "Safety"],
+        "pathway": [
+          "Bachelor's in Chemical Engineering",
+          "Complete internships in manufacturing",
+          "Learn process simulation software (Aspen, HYSYS)",
+          "Gain experience in process optimization"
+        ]
+      }
+    ]
+  },
+  "ch002": {
+    "chapterId": "ch002",
+    "chapterName": "Solid-state Chemistry",
+    "center": {
+      "title": "Solid-state Chemistry",
+      "x": 400,
+      "y": 300
+    },
+    "careers": [
+      {
+        "id": 7,
+        "title": "Materials Scientist",
+        "x": 300,
+        "y": 200,
+        "salary": "$70k-$120k",
+        "education": "Bachelor's in Materials Science",
+        "description": "Research and develop new materials with specific properties.",
+        "skills": ["Materials Characterization", "X-ray Diffraction", "Microscopy", "Crystal Structure"],
+        "pathway": [
+          "Bachelor's in Materials Science or Chemistry",
+          "Learn characterization techniques",
+          "Complete research projects",
+          "Specialize in solid-state materials"
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Semiconductor Engineer",
+        "x": 500,
+        "y": 200,
+        "salary": "$85k-$150k",
+        "education": "Bachelor's in Electrical Engineering",
+        "description": "Design and manufacture semiconductor devices and circuits.",
+        "skills": ["Semiconductor Physics", "Clean Room Techniques", "Device Fabrication", "Testing"],
+        "pathway": [
+          "Bachelor's in Electrical or Materials Engineering",
+          "Learn semiconductor processing",
+          "Gain clean room experience",
+          "Specialize in device physics"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sign in to Setu</title>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-auth.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            height: 100vh;
+            display: flex;
+            background: #0f0f0f;
+            color: #e0e0e0;
+        }
+
+        .left-section {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 80px;
+            background: #1a1a1a;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: #4a90e2;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 64px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 300;
+            color: #e0e0e0;
+            margin-bottom: 48px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            max-width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #c1fa6b;
+            box-shadow: 0 0 0 3px rgba(193, 250, 107, 0.1);
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        .login-btn {
+            width: 100%;
+            max-width: 100%;
+            padding: 12px;
+            background: #c1fa6b;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-sizing: border-box;
+        }
+
+        .login-btn:hover {
+            background: #a8e055;
+        }
+
+        .login-btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .signup-text {
+            margin-top: 24px;
+            color: #888;
+            font-size: 15px;
+        }
+
+        .signup-text a {
+            color: #c1fa6b;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .signup-text a:hover {
+            text-decoration: none;
+        }
+
+        .right-section {
+            width: 50%;
+            background-image: url('../images/1.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .right-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .info-section {
+            padding: 80px 64px 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h2 {
+            font-size: 36px;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 32px;
+            line-height: 1.3;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            background: #c1fa6b;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .check-icon::after {
+            content: '✓';
+            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .feature-text {
+            margin-left: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            line-height: 1.5;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .error-message {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .left-section, .right-section {
+                width: 100%;
+            }
+            
+            .left-section {
+                padding: 40px;
+            }
+            
+            .info-section {
+                padding: 40px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body x-data="loginApp()">
+    <div class="left-section">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 256 256">
+                <path d="M200,168a32.06,32.06,0,0,0-31,24H72a32,32,0,0,1,0-64h96a40,40,0,0,0,0-80H72a8,8,0,0,0,0,16h96a24,24,0,0,1,0,48H72a48,48,0,0,0,0,96h97a32,32,0,1,0,31-40Zm0,48a16,16,0,1,1,16-16A16,16,0,0,1,200,216Z"></path>
+            </svg>
+        </div>
+
+        <h1 x-text="isSignup ? 'Create your Setu account' : 'Sign in to your Setu account'"></h1>
+
+        <form @submit.prevent="isSignup ? handleSignup() : handleEmailLogin()">
+            <div class="form-group" x-show="isSignup">
+                <label>I am a</label>
+                <div style="display: flex; gap: 16px; margin-top: 8px;">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="radio" x-model="role" value="student" style="margin-right: 8px;" required>
+                        Student
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="radio" x-model="role" value="teacher" style="margin-right: 8px;" required>
+                        Teacher
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Your email</label>
+                <input type="email" id="email" x-model="email" placeholder="you@domain.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" x-model="password" placeholder="Your password" required>
+            </div>
+
+            <div class="form-group" x-show="isSignup && role === 'teacher'">
+                <label for="teacherName">Teacher Name</label>
+                <input type="text" id="teacherName" x-model="teacherName" placeholder="Your full name" :required="isSignup && role === 'teacher'">
+            </div>
+
+            <div class="form-group" x-show="isSignup && role === 'teacher'">
+                <label for="schoolName">School Name</label>
+                <input type="text" id="schoolName" x-model="schoolName" placeholder="Your school name" :required="isSignup && role === 'teacher'">
+            </div>
+
+            <button type="submit" class="login-btn" :disabled="isLoading" x-text="isLoading ? 'Please wait...' : (isSignup ? 'Create Account' : 'Log in')"></button>
+        </form>
+
+        <p class="signup-text">
+            <span x-text="isSignup ? 'Already have an account?' : 'Don\'t have an account yet?'"></span>
+            <a @click="toggleMode()" x-text="isSignup ? 'Sign in' : 'Sign up'"></a>
+        </p>
+        
+        <div x-show="errorMessage" class="error-message" x-text="errorMessage"></div>
+    </div>
+
+    <div class="right-section">
+        <div class="info-section">
+            <h2>Modern AI learning mentor for<br> </h2>
+
+            <div class="features">
+                <div class="feature-item">
+                    <div class="check-icon"></div>
+                    <div class="feature-text">Interactive chapter-wise learning</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="check-icon"></div>
+                    <div class="feature-text">AI-powered quiz generation</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="check-icon"></div>
+                    <div class="feature-text">Smart flashcards and career guidance<br>tailored to your learning progress</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="check-icon"></div>
+                    <div class="feature-text">Personalized study recommendations</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="../static/firebase.static.js"></script>
+    <script>
+        function loginApp() {
+            return {
+                email: '',
+                password: '',
+                role: 'student',
+                teacherName: '',
+                schoolName: '',
+                isLoading: false,
+                errorMessage: '',
+                isSignup: false,
+
+                init() {
+                    firebase.initializeApp(firebaseConfig);
+                    this.auth = firebase.auth();
+                    
+                    this.auth.onAuthStateChanged((user) => {
+                        if (user) {
+                            const userRole = localStorage.getItem(`userRole_${user.uid}`);
+                            if (userRole === 'teacher') {
+                                window.location.href = '../teacher';
+                            } else {
+                                window.location.href = '../';
+                            }
+                        }
+                    });
+                },
+
+                toggleMode() {
+                    this.isSignup = !this.isSignup;
+                    this.errorMessage = '';
+                    this.role = 'student';
+                    this.teacherName = '';
+                    this.schoolName = '';
+                },
+
+                async handleEmailLogin() {
+                    this.isLoading = true;
+                    this.errorMessage = '';
+
+                    try {
+                        const userCredential = await this.auth.signInWithEmailAndPassword(this.email, this.password);
+                        const userRole = localStorage.getItem(`userRole_${userCredential.user.uid}`);
+                        
+                        if (userRole === 'teacher') {
+                            window.location.href = '../teacher';
+                        } else {
+                            window.location.href = '../';
+                        }
+                    } catch (error) {
+                        this.errorMessage = this.getErrorMessage(error.code);
+                    }
+
+                    this.isLoading = false;
+                },
+                
+                async handleSignup() {
+                    this.isLoading = true;
+                    this.errorMessage = '';
+
+                    try {
+                        const userCredential = await this.auth.createUserWithEmailAndPassword(this.email, this.password);
+                        
+                        // Store user role for future logins
+                        localStorage.setItem(`userRole_${userCredential.user.uid}`, this.role);
+                        
+                        // Save teacher data to DynamoDB if role is teacher
+                        if (this.role === 'teacher') {
+                            await this.saveTeacherData(userCredential.user.uid);
+                            // Add delay before redirect
+                            await new Promise(resolve => setTimeout(resolve, 1500));
+                        } else {
+                            // Add delay for students too
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
+                        
+                        // Redirect based on role
+                        if (this.role === 'teacher') {
+                            window.location.href = '../teacher';
+                        } else {
+                            window.location.href = '../';
+                        }
+                        
+                    } catch (error) {
+                        this.errorMessage = this.getErrorMessage(error.code);
+                    }
+                    
+                    this.isLoading = false;
+                },
+
+                async saveTeacherData(firebaseUID) {
+                    console.log('Starting saveTeacherData with UID:', firebaseUID);
+                    
+                    const payload = {
+                        email: this.email,
+                        firebaseUID: firebaseUID,
+                        name: this.teacherName,
+                        schoolName: this.schoolName
+                    };
+                    
+                    console.log('Payload to send:', payload);
+                    
+                    try {
+                        console.log('Making API call to Lambda...');
+                        const response = await fetch('https://tawf54kc575lndv6wj2woqq5uy0fbfez.lambda-url.ap-south-1.on.aws/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        console.log('Response status:', response.status);
+                        console.log('Response headers:', response.headers);
+                        
+                        const responseText = await response.text();
+                        console.log('Response text:', responseText);
+                        
+                        if (!response.ok) {
+                            throw new Error(`API call failed with status ${response.status}: ${responseText}`);
+                        }
+                        
+                        const result = JSON.parse(responseText);
+                        console.log('Teacher data saved successfully:', result);
+                        return result;
+                    } catch (error) {
+                        console.error('Error in saveTeacherData:', error);
+                        alert('Error saving teacher data: ' + error.message);
+                        throw error;
+                    }
+                },
+
+                getErrorMessage(errorCode) {
+                    const errorMessages = {
+                        'auth/user-not-found': 'No account found with this email.',
+                        'auth/wrong-password': 'Incorrect password.',
+                        'auth/invalid-email': 'Invalid email address.',
+                        'auth/user-disabled': 'This account has been disabled.',
+                        'auth/too-many-requests': 'Too many failed attempts. Try again later.',
+                        'auth/email-already-in-use': 'An account with this email already exists.',
+                        'auth/weak-password': 'Password should be at least 6 characters.',
+                        'auth/operation-not-allowed': 'Email/password accounts are not enabled.'
+                    };
+                    return errorMessages[errorCode] || 'An error occurred. Please try again.';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
